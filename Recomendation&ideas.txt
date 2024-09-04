@@ -1,0 +1,21 @@
+
+
+1. **Considering the scalability of the project, I didn't use a complex state management system like Redux because it is a very small project.**
+
+2. **I am using local storage instead of a context hook because I want to make my sessions persistent, so they don't get lost after a page refresh.**
+
+3. **On the backend, we can use Helmet for XSS filtration and the Validator package to validate email addresses. On the frontend, we can use a regex expression to meet email criteria.**
+
+4. **I have set the email as unique in the Mongoose schema to avoid facing duplicate email problems.**
+
+5. **I am not adding beautiful alert libraries like Swal, Bootstrap alert, or Tailwind alerts because they are not mentioned in the requirements. The requirements do not specify the need for a custom alert system.**
+
+6. **I used a newer version of Express that deprecated the use of body-parser, but I still used both.**
+
+7. **I used a MongoDB store to prevent memory leakage.**
+
+8. **By setting "credentials: 'include'," cookies on the frontend and backend can communicate, and on every request, the session doesn't reset.**
+
+9. **Considering the scalability of the project, I used the default Fetch API to perform REST API functions instead of using Axios or React Query.**
+
+10. **I tried to keep the project as simple as possible and didn't install any state management packages.**
