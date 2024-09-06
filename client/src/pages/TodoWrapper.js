@@ -4,9 +4,15 @@ import { TodoForm } from "../components/TodoForm";
 import { EditTodoForm } from "../components/EditTodoForm";
 import URL from "../URL/URL";
 import { useNavigate } from "react-router-dom";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const navigate = useNavigate();
 
   const signouts = () => {
@@ -14,12 +20,16 @@ export const TodoWrapper = () => {
     navigate("/");
   };
 
-  const fetchTodo = async () => {
+  const fetchTodo = async (page = 1) => {
     try {
       const response = await fetch(URL + "gettodo", {
         mode: "cors",
         method: "POST",
-        body: JSON.stringify({ adminID: localStorage.getItem("adminID") }),
+        body: JSON.stringify({
+          adminID: localStorage.getItem("adminID"),
+          page,
+          limit: 12, // Define your limit here (e.g., 10 items per page)
+        }),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -33,8 +43,9 @@ export const TodoWrapper = () => {
         localStorage.removeItem("adminID");
         navigate("/");
       } else {
-        console.log(json);
-        setTodos(json);
+        setTodos(json.tasks);
+        setCurrentPage(json.currentPage);
+        setTotalPages(json.totalPages);
       }
     } catch (error) {
       console.log("error", error);
@@ -45,9 +56,21 @@ export const TodoWrapper = () => {
     if (!localStorage.getItem("adminID")) {
       navigate("/");
     } else {
-      fetchTodo();
+      fetchTodo(currentPage);
     }
-  }, []);
+  }, [currentPage]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
 
   const addTodo = async (topic, name, email, address, country) => {
     try {
@@ -56,11 +79,11 @@ export const TodoWrapper = () => {
         method: "POST",
         body: JSON.stringify({
           adminID: localStorage.getItem("adminID"),
-          topic: topic,
-          name: name,
-          email: email,
-          address: address,
-          country: country,
+          topic,
+          name,
+          email,
+          address,
+          country,
         }),
         headers: {
           Accept: "application/json",
@@ -77,9 +100,10 @@ export const TodoWrapper = () => {
       } else {
         console.log(json);
         if (json.message === "Email already exists") {
-          return alert("email already exist");
+          return alert("Email already exists");
         } else {
-          setTodos([...todos, json]);
+          // Prepend the new task to the beginning of the list
+          setTodos([json, ...todos]);
         }
       }
     } catch (error) {
@@ -115,7 +139,7 @@ export const TodoWrapper = () => {
         navigate("/");
       } else {
         console.log(json);
-        fetchTodo();
+        fetchTodo(currentPage);
       }
     } catch (error) {
       console.log("error", error);
@@ -193,21 +217,31 @@ export const TodoWrapper = () => {
 
   return (
     <>
-      <button
-        className="todo-btn"
-        style={{
-          display: "flex",
-          alignItems: "start",
-          backgroundColor: "red",
-          borderRadius: "10px",
-          marginTop: "10px",
-        }}
-        onClick={(e) => signouts()}
-      >
-        signout
-      </button>
       <div className="TodoWrapper">
-        <h1>Get Things Done!</h1>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "4px",
+          }}
+        >
+          <button
+            className="todo-btn"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "red",
+              borderRadius: "10px",
+              marginRight: "20px", // Adds space between the button and the h1 tag
+            }}
+            onClick={(e) => signouts()}
+          >
+            <FontAwesomeIcon icon={faRightFromBracket} />
+          </button>
+          <h1>Get Things Done!</h1>
+        </div>
+
         <TodoForm addTodo={addTodo} />
         {console.log(todos)}
 
@@ -215,15 +249,37 @@ export const TodoWrapper = () => {
           todo.isEditing ? (
             <EditTodoForm editTodo={editTask} task={todo} />
           ) : (
-            <Todo
-              key={todo.id}
-              task={todo}
-              deleteTodo={deleteTodo}
-              editTodo={editTodo}
-              toggleComplete={toggleComplete}
-            />
+            <>
+              <Todo
+                key={todo.id}
+                task={todo}
+                deleteTodo={deleteTodo}
+                editTodo={editTodo}
+                toggleComplete={toggleComplete}
+              />
+            </>
           )
         )}
+
+        <div className="pagination-controls">
+          <button
+            onClick={handlePreviousPage}
+            // disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span
+            style={{ marginLeft: "8px", marginRight: "8px", color: "white" }}
+          >
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            // disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

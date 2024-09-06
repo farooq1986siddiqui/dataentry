@@ -31,39 +31,49 @@ export const TodoForm = ({ addTodo }) => {
         type="text"
         value={topic}
         onChange={(e) => setTopic(e.target.value)}
-        className="todo-input"
+        className="todo-input-t"
         placeholder="Topic?"
       />
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="todo-input"
+        className="todo-input-n"
         placeholder="Name?"
       />
       <input
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="todo-input"
+        className="todo-input-e"
         placeholder="Email?"
       />
       <input
         type="text"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
-        className="todo-input"
+        className="todo-input-a"
         placeholder="Address?"
       />
       <input
         type="text"
         value={country}
         onChange={(e) => setCountry(e.target.value)}
-        className="todo-input"
+        className="todo-input-c"
         placeholder="Country?"
       />
-      <button type="submit" className="todo-btn">
-        Add Task
+      <button
+        style={{
+          fontSize: "15px",
+          borderRadius: "25%",
+          backgroundColor: "red",
+          fontWeight: "bold",
+          marginLeft: "6px",
+        }}
+        type="submit"
+        className="todo-btn"
+      >
+        +
       </button>
     </form>
   );

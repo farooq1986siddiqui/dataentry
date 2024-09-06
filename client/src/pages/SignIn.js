@@ -13,9 +13,9 @@ export default function SigIn() {
     }
   }, []);
   return (
-    <div className="TodoWrapper">
+    <div className="sign">
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <p style={{ fontSize: "0.75rem", margin: 0 }}>
+        <p style={{ fontSize: "0.75rem", margin: 0, color: "white" }}>
           Already have an account?
         </p>
         <h1 style={{ margin: 0 }}>Sign In!</h1>
