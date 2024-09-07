@@ -43,7 +43,7 @@ export const SignInForm = () => {
         localStorage.removeItem("password");
         navigate("/addtask");
       } else if (json.message === "password") {
-        alert("Password incorrect");
+        alert("Password or email is incorrect");
       }
     } catch (error) {
       console.log("error", error);
